@@ -67,6 +67,37 @@ export class InventoryPage {
     return itemName?.trim();
   }
 
+  async verifyFirstItemFieldsAndAddToCart() {
+    await expect(
+      this.page.locator('[data-test="inventory-item-name"]').first(),
+    ).toHaveText(/\S+/);
+    console.log("Verified that the first item has a non-empty name.");
+
+    await expect(
+      this.page.locator('[data-test="inventory-item-desc"]').first(),
+    ).toHaveText(/\S+/);
+    console.log("Verified that the first item has a non-empty description.");
+
+    await expect(
+      this.page.locator('[data-test="inventory-item-price"]').first(),
+    ).toHaveText(/\S+/);
+    console.log("Verified that the first item has a non-empty price.");
+
+    const itemName =
+      (await this.page
+        .locator('[data-test="inventory-item-name"]')
+        .first()
+        .textContent()) ?? "";
+
+    await this.page
+      .locator('button[data-test^="add-to-cart-"]')
+      .first()
+      .click();
+    console.log(`Added item to cart: ${itemName}`);
+
+    return itemName;
+  }
+
   async getCartBadgeCount() {
     await this.page.waitForSelector('[data-test="shopping-cart-link"] span', {
       timeout: 5000,

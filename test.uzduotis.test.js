@@ -18,10 +18,8 @@ test("test", async ({ page }) => {
   console.log(`Number of items on inventory page: ${itemCount}`);
   await expect(page.locator('[data-test="inventory-item"]')).toHaveCount(6);
 
-  // Add the first item to the cart and save its name for later verification
+  const itemName = await inventoryPage.verifyFirstItemFieldsAndAddToCart();
 
-  const itemName = await inventoryPage.addItemToCart(0);
-  console.log(`Added item to cart: ${itemName}`);
   await cartPage.goto();
 
   //verify that the cart contains the item that was added
