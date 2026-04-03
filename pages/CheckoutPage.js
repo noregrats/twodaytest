@@ -3,6 +3,10 @@ export class CheckoutPage {
     this.page = page;
   }
 
+  async goto() {
+    await this.page.locator('[data-test="checkout"]').click();
+  }
+
   async fillCheckoutForm(firstName, lastName, postalCode) {
     await this.page.locator('[data-test="firstName"]').fill(firstName);
     await this.page.locator('[data-test="lastName"]').fill(lastName);
@@ -22,6 +26,9 @@ export class CheckoutPage {
   }
 
   async getOrderConfirmation() {
-    return await this.page.locator(".complete-header").textContent();
+    const confirmationText =
+      (await this.page.locator(".complete-header").textContent())?.trim() ?? "";
+    console.log(`Order confirmation success: ${confirmationText}`);
+    return confirmationText;
   }
 }
