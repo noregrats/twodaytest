@@ -1,0 +1,23 @@
+Manual test case 1: Cross-user cart persistence after logout/login
+Preconditions
+Start with a fresh browser context.
+No cookies, no localStorage cart.
+Test data
+User 1: standard_user / secret_sauce
+User 2: visual_user / secret_sauce
+Product: any single inventory item.
+Steps
+Open the login page.
+Log in as standard_user.
+Add one product to the cart.
+Verify the cart badge shows 1.
+Open the menu and click Logout.
+Verify the login page is shown.
+Log in as visual_user in the same browser context.
+Observe the cart badge.
+Open the cart page.
+
+Expected results
+The second login should be successful.
+The test should document whether the cart persists across logout/login in the same browser context.
+Based on the current source, the cart is expected to persist until Reset App State is used, because logout clears the session cookie but not localStorage["cart-contents"]. Treat that as a characterization result unless your product requirement says logout must clear the cart.
