@@ -1,3 +1,5 @@
+import { expect } from "@playwright/test";
+
 export class LoginPage {
   constructor(page) {
     this.page = page;
@@ -51,6 +53,9 @@ export class LoginPage {
   async autoLogin() {
     const { username, password } = await this.extractCredentials();
     await this.login(username, password);
+    console.log(
+      `Logged in with username: ${username} and password: ${password}`,
+    );
     return { username, password };
   }
 
@@ -61,5 +66,12 @@ export class LoginPage {
       `Logged in with username: ${username} and password: ${password}`,
     );
     return { username, password };
+  }
+
+  async logoutAndVerifyLoginPage() {
+    await this.page.getByRole("button", { name: "Open Menu" }).click();
+    await this.page.locator('[data-test="logout-sidebar-link"]').click();
+    await expect(this.page.locator(this.loginButton)).toBeVisible();
+    console.log("Successfully logged out and returned to login page");
   }
 }
