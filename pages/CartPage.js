@@ -30,4 +30,16 @@ export class CartPage {
       .locator('[data-test="inventory-item-name"]')
       .allTextContents();
   }
+
+  async isCartEmpty() {
+    const itemCount = await this.page
+      .locator('[data-test="inventory-item-name"]')
+      .count();
+
+    const cartData = await this.page.evaluate(() => {
+      return localStorage.getItem("cart-contents");
+    });
+    console.log("Cart data from localStorage:", cartData);
+    return itemCount === 0 && !cartData;
+  }
 }
