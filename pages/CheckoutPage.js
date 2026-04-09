@@ -15,6 +15,21 @@ export class CheckoutPage {
     console.log("Filled checkout form and continued");
   }
 
+  async tryCheckoutWithEmptyFieldsAndConfirmError(
+    expectedMessage = "Error: First Name is required",
+  ) {
+    await this.page.locator('[data-test="firstName"]').fill("");
+    await this.page.locator('[data-test="lastName"]').fill("");
+    await this.page.locator('[data-test="postalCode"]').fill("");
+    await this.page.locator('[data-test="continue"]').click();
+
+    const actualError =
+      (await this.page.locator('[data-test="error"]').textContent())?.trim() ??
+      "";
+    console.log(`Actual error message: "${actualError}"`);
+    return actualError === expectedMessage;
+  }
+
   async getCheckoutItemNames() {
     return await this.page
       .locator('[data-test="inventory-item-name"]')

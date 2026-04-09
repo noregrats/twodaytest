@@ -2,11 +2,13 @@ import { test, expect } from "@playwright/test";
 import { LoginPage } from "./pages/LoginPage.js";
 import { InventoryPage } from "./pages/InventoryPage.js";
 import { CartPage } from "./pages/CartPage.js";
+import { CheckoutPage } from "./pages/CheckoutPage.js";
 
-test("clear local storage and verify cart is empty", async ({ page }) => {
+test("try to checkout with empty cart", async ({ page }) => {
   const loginPage = new LoginPage(page);
   const inventoryPage = new InventoryPage(page);
   const cartPage = new CartPage(page);
+  const checkoutPage = new CheckoutPage(page);
 
   await loginPage.goto();
   await loginPage.autoLogin();
@@ -16,11 +18,7 @@ test("clear local storage and verify cart is empty", async ({ page }) => {
   await inventoryPage.addItemToCart(1);
   expect(await inventoryPage.getCartBadgeCount()).toBe(2);
 
-  await page.getByRole("button", { name: "Open Menu" }).click();
-  await page.locator('[data-test="reset-sidebar-link"]').click();
-  await expect(page.locator('[data-test="shopping-cart-badge"]')).toBeHidden();
-
-  await page.reload();
   await cartPage.goto();
-  await cartPage.isCartEmpty();
+  await cartPage.proceedToCheckout();
+  await checkoutPage.tryCheckoutWithEmptyFieldsAndConfirmError();
 });
