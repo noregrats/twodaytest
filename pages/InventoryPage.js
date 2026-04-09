@@ -33,7 +33,45 @@ export class InventoryPage {
     return priceText?.trim() ?? "";
   }
 
+  async logAllItemPricesParsed() {
+    const rawPrices = await this.page
+      .locator(".inventory_item_price")
+      .allTextContents();
+    const parsedPrices = rawPrices.map((priceText) =>
+      Number(priceText.replace(/[^0-9.]/g, "")),
+    );
+
+    console.log("Raw prices:", rawPrices);
+    console.log("Parsed prices:", parsedPrices);
+
+    return parsedPrices;
+  }
+
   async pricecheckLowHigh() {
+    const firstPriceText = await this.getItemPrice(0);
+    const secondPriceText = await this.getItemPrice(1);
+
+    const firstPriceInt = Math.round(
+      Number(firstPriceText.replace(/[^0-9.]/g, "")),
+    );
+    const secondPriceInt = Math.round(
+      Number(secondPriceText.replace(/[^0-9.]/g, "")),
+    );
+
+    expect(Number.isFinite(firstPriceInt)).toBe(true);
+    expect(Number.isFinite(secondPriceInt)).toBe(true);
+
+    console.log(
+      "firstPriceInt:",
+      firstPriceInt,
+      "secondPriceInt:",
+      secondPriceInt,
+    );
+
+    return { firstPriceInt, secondPriceInt };
+  }
+
+  async pricecheckHighLow() {
     const firstPriceText = await this.getItemPrice(0);
     const secondPriceText = await this.getItemPrice(1);
 
