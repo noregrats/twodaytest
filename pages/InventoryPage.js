@@ -137,12 +137,13 @@ export class InventoryPage {
   }
 
   async getCartBadgeCount() {
-    await this.page.waitForSelector('[data-test="shopping-cart-link"] span', {
-      timeout: 5000,
-    });
-    const badgeText = await this.page
-      .locator('[data-test="shopping-cart-link"] span')
-      .textContent();
+    const badge = this.page.locator('[data-test="shopping-cart-link"] span');
+    if ((await badge.count()) === 0) {
+      console.log("Current cart badge count: 0");
+      return 0;
+    }
+
+    const badgeText = await badge.textContent();
     console.log("Current cart badge count:", badgeText);
     return badgeText ? parseInt(badgeText.trim(), 10) : 0;
   }
